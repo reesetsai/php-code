@@ -31,33 +31,67 @@ $result = $mysqli->query($sql);
 //將資料條列
 $rows_cnt = $result->num_rows;
 //每頁所顯示的資料數量
-$per = 4;
+$per = 1;
 //頁數
 $pages = ceil($rows_cnt/$per);
 //當前所在的頁數 默認為page = 1
-if(!isset($_GET["page"])){
-	$page = 1;
+if(!empty($_GET['page'])){
+	$page = $_GET['page'];
 }else{
-	$page = intval($_GET["page"]);
+	$page = 1;
 }
 //從哪一筆資料開始取得
 $start = ($page-1)*$per;
+//資料從$start開始,取出$per條
 $query = "SELECT * FROM `guestbook` LIMIT $start, $per";
+//將取出的資料丟到變數$result
 $result = $mysqli->query($query);
-
+//將檔案所在的url調用出來
 $url = $_SERVER["REQUEST_URI"];
 $url = parse_url($url);
 $url = $url['path'];
 $next = $page + 1;
 $pre = $page - 1;
+
+function page(){
+	global $page;
+	global $pages;
+	global $url;
+	$list = "";
+	$num = 3;
+	
+	
+	//當前頁面之前的顯示頁數
+for($i=$num; $i>=1; $i--){
+	$cpage = $page-$i;
+	if($cpage>1){
+		$list.= '<a href="'.$url.'?page='.$cpage.'">'."&nbsp".$cpage."&nbsp".'</a>';
+		}
+}
+	//當前頁面
+	if($pages >1){
+		$list .= "&nbsp;$page&nbsp;";
+	}
+	//當前頁面之後的顯示頁數
+	for($i= 1; $i<$num; $i++){
+		$cpage = $page+$i;
+		if($cpage<=$pages){
+		$list.= '<a href="'.$url.'?page='.$cpage.'">'."&nbsp".$cpage."&nbsp".'</a>';
+		}else{
+			break;
+		}
+	}
+	return $list;
+}
+
 	if($page >= $pages){
 		$page = $pages;
 	}
-	if($page >= $pages){
+	if($page > $pages){
 		echo "共 $rows_cnt 筆資料"."&nbsp;&nbsp;".'<a href="'.$url.'?page=1">首頁</a> <a href="'.$url.'?page='.$pre.'">上一頁</a>';
 	}
-	if($page > 1 && $page < $pages){
-		echo "共 $rows_cnt 筆資料"."&nbsp;&nbsp;".'<a href="'.$url.'?page=1">首頁</a> <a href="'.$url.'?page='.$pre.'">上一頁</a> <a href="'.$url.'?page='.$next.'">下一頁</a>';
+	if($page > 1 && $page <= $pages){
+		echo "共 $rows_cnt 筆資料"."&nbsp;&nbsp;".'<a href="'.$url.'?page=1">首頁</a>'.page().'<a href="'.$url.'?page='.$pre.'">上一頁</a> <a href="'.$url.'?page='.$next.'">下一頁</a>';
 	}
 	if($page < 1){
 		$page = 1;
