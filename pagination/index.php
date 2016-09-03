@@ -13,7 +13,8 @@
 </table>
 <table width="400" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
 <tr>
-<form id="form1" name="form1" method="post" action="addguestbook.php">
+<form id="form1" name="form1" method="post" action="addguestbook.php" enctype="multipart/form-data">
+<input name="MAX_FILE_SIZE" type="hidden" >
 <td>
 <table width="400" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">
 <tr>
@@ -30,6 +31,11 @@
 <td valign="top">Comment</td>
 <td valign="top">:</td>
 <td><textarea name="comment" cols="40" rows="3" id="comment"></textarea></td>
+</tr>
+<tr>
+<td valign="top">上傳圖片</td>
+<td valign="top">:</td>
+<td><input name="picture" type="file" id="picture" size="40"></td>
 </tr>
 <tr>
 <td>&nbsp;</td>
